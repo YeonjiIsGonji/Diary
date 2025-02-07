@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <title>일기 목록</title>
+    <style>
+        body {
+            font-family: 'Arial, sans-serif';
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f5c2c7;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #dfe6f1;
+        }
+
+        .emotion-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .btn-register {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f2e7c3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-register:hover {
+            background-color: #e6dbb9;
+        }
+
+        /* 각 열의 너비 설정 */
+        .col-date {
+            width: 20%;
+        }
+
+        .col-title {
+            width: 50%;
+        }
+
+        .col-emotions {
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+<h1>일기 목록</h1>
+<table>
+    <thead>
+    <tr>
+        <th class="col-date">날짜</th>
+        <th class="col-title">제목</th>
+        <th class="col-emotions">기분</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="diary : ${diaries}">
+        <td th:text="${diary.date}"></td>
+        <td>
+            <a th:href="@{/record/diaries/{diaryId}(diaryId=${diary.id})}" th:text="${diary.title}"></a>
+        </td>
+        <td>
+            <img th:each="emotion : ${diary.emotions}"
+                 th:src="@{'/images/' + ${#strings.toLowerCase(emotion.name())} + '.png'}"
+                 th:alt="${emotion.description}"
+                 class="emotion-icon">
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <button class="btn-register" onclick="location.href='/diary/register'"
+            th:onclick="|location.href='@{/record/diaries/add}'|">일기 등록
+    </button>
+</div>
+</body>
+</html>
