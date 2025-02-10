@@ -92,7 +92,7 @@
     <tr th:each="diary : ${diaries}">
         <td th:text="${diary.date}"></td>
         <td>
-            <a th:href="@{/record/diaries/{diaryId}(diaryId=${diary.id})}" th:text="${diary.title}"></a>
+            <a th:href="@{/diaries/{diaryId}(diaryId=${diary.id})}" th:text="${diary.title}"></a>
         </td>
         <td>
             <img th:each="emotion : ${diary.emotions}"
@@ -105,7 +105,7 @@
 </table>
 <div>
     <button class="btn-register" onclick="location.href='/diary/register'"
-            th:onclick="|location.href='@{/record/diaries/add}'|">일기 등록
+            th:onclick="|location.href='@{/diaries/add}'|">일기 등록
     </button>
 </div>
 </body>

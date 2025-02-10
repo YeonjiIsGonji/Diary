@@ -16,8 +16,6 @@ public class DiaryConfig {
         this.dataSource = dataSource;
     }
 
-
-
     @Bean
     public DiaryRepsitory diaryRepsitory() {
         return new JdbcTemplateDiaryRepository(dataSource);

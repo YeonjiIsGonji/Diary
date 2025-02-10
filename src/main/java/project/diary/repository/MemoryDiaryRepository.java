@@ -1,11 +1,9 @@
 package project.diary.repository;
 
-import org.springframework.stereotype.Repository;
 import project.diary.domain.Diary;
 
 import java.util.*;
 
-@Repository
 public class MemoryDiaryRepository {
     private static long sequence = 0L;
     private static final Map<Long, Diary> store = new HashMap<>();
