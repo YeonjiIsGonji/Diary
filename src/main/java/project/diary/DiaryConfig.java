@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import project.diary.repository.DiaryRepsitory;
 import project.diary.repository.JdbcTemplateDiaryRepository;
+import project.diary.repository.JdbcTemplateUserRepository;
+import project.diary.repository.UserRepository;
 
 import javax.sql.DataSource;
 
@@ -19,5 +21,10 @@ public class DiaryConfig {
     @Bean
     public DiaryRepsitory diaryRepsitory() {
         return new JdbcTemplateDiaryRepository(dataSource);
+    }
+
+    @Bean
+    public UserRepository userRepository() {
+        return new JdbcTemplateUserRepository(dataSource);
     }
 }
