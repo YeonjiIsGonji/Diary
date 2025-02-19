@@ -1,5 +1,7 @@
 package project.diary;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +22,14 @@ public class HomeController {
 
 
     @GetMapping("/")
-    public String home(@CookieValue(name = "userId", required = false) Long userId, Model model) {
-        if (userId == null) {
+    public String home(HttpServletRequest request, Model model) {
+
+        HttpSession session = request.getSession(false);
+        if (session == null) {
             return "home";
         }
 
-        User loginUser = userRepository.findByID(userId).get();
+        User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "home";
         }

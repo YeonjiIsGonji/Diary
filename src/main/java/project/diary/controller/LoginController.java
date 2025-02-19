@@ -1,7 +1,7 @@
 package project.diary.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,25 +22,25 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute User user, HttpServletResponse response) {
+    public String login(@ModelAttribute User user, HttpServletRequest request) {
         User loginUser = loginService.login(user.getLoginId(), user.getPassword());
 
         if (loginUser == null) {
             return "loginForm";
         }
 
-        //쿠키
-        Cookie idCookie = new Cookie("userId", String.valueOf(loginUser.getUserId()));
-        response.addCookie(idCookie);
+        HttpSession session = request.getSession();
+        session.setAttribute("loginUser", loginUser);
 
         return "redirect:/";
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("userId", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 }
