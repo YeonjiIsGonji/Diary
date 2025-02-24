@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JdbcTemplateDiaryRepository implements DiaryRepsitory{
+public class JdbcTemplateDiaryRepository implements DiaryRepository{
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -32,6 +32,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepsitory{
         parameters.put("title", diary.getTitle());
         parameters.put("content", diary.getContent());
         parameters.put("date", diary.getDate());
+        parameters.put("author_id", diary.getAuthorId());
 
         //INSERT 실행 및 자동 생성된 ID 가져오기
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -60,6 +61,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepsitory{
             findDiary.setTitle(rs.getString("title"));
             findDiary.setContent(rs.getString("content"));
             findDiary.setDate(rs.getDate("date").toLocalDate());
+            findDiary.setAuthorId(rs.getLong("author_id"));
             return findDiary;
         }, diaryId);
 
@@ -69,22 +71,22 @@ public class JdbcTemplateDiaryRepository implements DiaryRepsitory{
     }
 
     @Override
-    public List<Diary> findAll() {
-        String sql = "select * from diary";
+    public List<Diary> findDiariesByUserId(Long userId) {
+        String sql = "select * from diary where author_id = ?";
 
-        // 모든 다이어리 가져오기
         List<Diary> diaries = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Diary diary = new Diary();
             diary.setId(rs.getLong("id"));
             diary.setTitle(rs.getString("title"));
             diary.setContent(rs.getString("content"));
             diary.setDate(rs.getDate("date").toLocalDate());
+            diary.setAuthorId(rs.getLong("author_id"));
 
-            // 각 다이어리의 감정 가져오기
             diary.setEmotions(findEmotionsByDiaryId(diary.getId()));
 
             return diary;
-        });
+        }, userId);
+
         return diaries;
     }
 

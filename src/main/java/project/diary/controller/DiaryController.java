@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.diary.domain.Diary;
 import project.diary.domain.EmotionType;
+import project.diary.domain.User;
 import project.diary.service.DiaryService;
 
 import java.util.List;
@@ -24,9 +25,11 @@ public class DiaryController {
     private final DiaryService diaryService;
 
     @GetMapping
-    @Operation(summary = "diary 목록 조회")
-    public String diaries(Model model) {
-        List<Diary> diaries = diaryService.findAllDiaries();
+    @Operation(summary = "로그인한 사용자의 diary 목록 조회")
+    public String diaries(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
+
+//        List<Diary> diaries = diaryService.findAllDiaries();
+        List<Diary> diaries = diaryService.findDiariesByUserId(loginUser.getUserId());
         model.addAttribute("diaries", diaries);
         return "diaries";
     }
@@ -51,7 +54,10 @@ public class DiaryController {
 
     @PostMapping("/add")
     @Operation(summary = "새로운 diary 저장")
-    public String addForm(@ModelAttribute Diary diary, RedirectAttributes redirectAttributes) {
+    public String addForm(@ModelAttribute Diary diary, RedirectAttributes redirectAttributes,
+                          @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
+
+        diary.setAuthorId(loginUser.getUserId());
         Diary savedDiary = diaryService.saveDiary(diary);
         redirectAttributes.addAttribute("diaryId", savedDiary.getId());
         redirectAttributes.addAttribute("status", true);
@@ -60,8 +66,16 @@ public class DiaryController {
 
     @GetMapping("/{diaryId}/edit")
     @Operation(summary = "특정 diary 수정")
-    public String edit(@PathVariable Long diaryId, Model model) {
+    public String edit(@PathVariable Long diaryId, Model model,
+                       @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+                       RedirectAttributes redirectAttributes) {
+
         Diary diary = diaryService.findDiaryById(diaryId).orElseThrow(() -> new IllegalArgumentException("Invalid diary ID"));
+
+        if (!diary.getAuthorId().equals(loginUser.getUserId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "작성자만 수정할 수 있습니다.");
+            return "redirect:diaries/" + diaryId;
+        }
         model.addAttribute("diary", diary);
         model.addAttribute("emotions", EmotionType.values());
         return "editDiary";
@@ -76,7 +90,16 @@ public class DiaryController {
 
     @PostMapping("/{diaryId}/delete")
     @Operation(summary = "특정 diary 삭제")
-    public String delete(@PathVariable Long diaryId) {
+    public String delete(@PathVariable Long diaryId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+                         RedirectAttributes redirectAttributes) {
+
+        Diary diary = diaryService.findDiaryById(diaryId).orElseThrow(() -> new IllegalArgumentException("Invalid diary Id"));
+
+        if (!diary.getAuthorId().equals(loginUser.getUserId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제할 수 있습니다.");
+            return "redirect:diaries/" + diaryId;
+        }
+
         diaryService.deleteDiary(diaryId);
         return "redirect:/diaries";
     }

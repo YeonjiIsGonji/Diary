@@ -2,7 +2,7 @@ package project.diary;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import project.diary.repository.DiaryRepsitory;
+import project.diary.repository.DiaryRepository;
 import project.diary.repository.JdbcTemplateDiaryRepository;
 import project.diary.repository.JdbcTemplateUserRepository;
 import project.diary.repository.UserRepository;
@@ -19,7 +19,7 @@ public class DiaryConfig {
     }
 
     @Bean
-    public DiaryRepsitory diaryRepsitory() {
+    public DiaryRepository diaryRepository() {
         return new JdbcTemplateDiaryRepository(dataSource);
     }
 

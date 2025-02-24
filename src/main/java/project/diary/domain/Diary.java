@@ -27,6 +27,9 @@ public class Diary {
     @Schema(description = "선택된 감정 리스트")
     private List<EmotionType> emotions;
 
+    @Schema(description = "작성자 아이디(userId)")
+    private Long authorId;
+
     public Diary() {
         this.emotions = new ArrayList<>();
     }
