@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.diary.domain.User;
 import project.diary.service.LoginService;
 
@@ -22,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute User user, HttpServletRequest request) {
+    public String login(@ModelAttribute User user, @RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request) {
         User loginUser = loginService.login(user.getLoginId(), user.getPassword());
 
         if (loginUser == null) {
@@ -32,7 +33,7 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
 
-        return "redirect:/";
+        return "redirect:" + redirectURL;
     }
 
     @PostMapping("/logout")
