@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link href="../css/bootstrap.min.css"
           th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <title>일기 목록</title>
+    <title>공유 일기 목록</title>
     <style>
         body {
             font-family: 'Arial', 'sans-serif';
@@ -79,10 +79,11 @@
     </style>
 </head>
 <body>
-<h1>일기 목록</h1>
+<h1>공유 일기 목록</h1>
 <table>
     <thead>
     <tr>
+        <th class="col-date">작성자</th>
         <th class="col-date">날짜</th>
         <th class="col-title">제목</th>
         <th class="col-emotions">기분</th>
@@ -90,6 +91,7 @@
     </thead>
     <tbody>
     <tr th:each="diary : ${diaries}">
+        <td th:text="${diary.authorId}"></td>
         <td th:text="${diary.date}"></td>
         <td>
             <a th:href="@{/diaries/{diaryId}(diaryId=${diary.id})}" th:text="${diary.title}"></a>
@@ -105,7 +107,7 @@
 </table>
 <div>
     <button class="btn-register" onclick="location.href='/diary/register'"
-            th:onclick="|location.href='@{/diaries/add}'|">일기 등록
+            th:onclick="|location.href='@{/diaries/add}'|">이전으로
     </button>
 </div>
 </body>

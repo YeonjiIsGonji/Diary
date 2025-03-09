@@ -26,6 +26,10 @@ public class DiaryService {
         return diaryRepository.findById(diaryId);
     }
 
+    public List<Diary> findSharedDiaries(Long userId) {
+        return diaryRepository.findSharedDiaries(userId);
+    }
+
     public Diary saveDiary(Diary diary) {
         return diaryRepository.save(diary);
     }

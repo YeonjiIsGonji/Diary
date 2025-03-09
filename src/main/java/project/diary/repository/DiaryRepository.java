@@ -10,6 +10,7 @@ public interface DiaryRepository {
     Diary save(Diary diary);
     Optional<Diary> findById(Long diaryId);
     List<Diary> findDiariesByUserId(Long userId);
+    List<Diary> findSharedDiaries(Long userId);
     void update(Long diaryId, Diary diary);
     void delete(Long diaryId);
 }

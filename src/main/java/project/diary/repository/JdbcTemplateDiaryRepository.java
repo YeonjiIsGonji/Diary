@@ -91,6 +91,26 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
     }
 
     @Override
+    public List<Diary> findSharedDiaries(Long userId) {
+        String sql = "select D.* from diary D JOIN user_shared US ON D.author_id = US.owner_user_id WHERE US.shared_user_id = ?";
+
+        List<Diary> sharedDiaries = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Diary diary = new Diary();
+            diary.setId(rs.getLong("id"));
+            diary.setTitle(rs.getString("title"));
+            diary.setContent(rs.getString("content"));
+            diary.setDate(rs.getDate("date").toLocalDate());
+            diary.setAuthorId(rs.getLong("author_id"));
+
+            diary.setEmotions(findEmotionsByDiaryId(diary.getId()));
+
+            return diary;
+        }, userId);
+
+        return sharedDiaries;
+    }
+
+    @Override
     public void update(Long diaryId, Diary diary) {
         // 1. diary 테이블 업데이트
         String updateDiarySql = "update diary set title = ?, content = ?, date = ? where id = ?";

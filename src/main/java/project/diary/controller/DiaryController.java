@@ -24,7 +24,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @GetMapping
+    @GetMapping("/owner")
     @Operation(summary = "로그인한 사용자의 diary 목록 조회")
     public String diaries(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
 
@@ -32,6 +32,15 @@ public class DiaryController {
         List<Diary> diaries = diaryService.findDiariesByUserId(loginUser.getUserId());
         model.addAttribute("diaries", diaries);
         return "diaries";
+    }
+
+    @GetMapping("/shared")
+    @Operation(summary = "로그인한 사용자가 공유받은 diary 목록 조회")
+    public String sharedDiaries(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
+
+        List<Diary> diaries = diaryService.findSharedDiaries(loginUser.getUserId());
+        model.addAttribute("diaries", diaries);
+        return "sharedDiaries";
     }
 
     @GetMapping("/{diaryId}")

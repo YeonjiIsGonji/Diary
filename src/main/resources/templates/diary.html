@@ -15,7 +15,7 @@
     <style>
         /* 기존 스타일 및 수정된 .diary-content 스타일 포함 */
         body {
-            font-family: 'Arial, sans-serif';
+            font-family: 'Arial', 'sans-serif';
             background-color: #f8f9fa;
             padding: 20px;
         }
@@ -152,7 +152,7 @@
 </div>
 
 <div class="button-group">
-    <button class="btn-list" th:onclick="|location.href='@{/diaries}'|">목록으로</button>
+    <button class="btn-list" th:onclick="|location.href='@{/diaries/owner}'|">목록으로</button>
     <button class="btn-edit" th:onclick="|location.href='@{/diaries/{diaryId}/edit(diaryId=${diary.id})}'|">수정
     </button>
     <form th:action="@{/diaries/{diaryId}/delete(diaryId=${diary.id})}" method="post"
