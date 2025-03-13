@@ -45,10 +45,13 @@ public class DiaryController {
 
     @GetMapping("/{diaryId}")
     @Operation(summary = "특정 diary 상세 조회")
-    public String diary(@PathVariable Long diaryId, Model model) {
+    public String diary(@PathVariable Long diaryId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
         Diary diary = diaryService.findDiaryById(diaryId).orElseThrow(() ->
         new IllegalArgumentException("Invalid diary Id"));
+
+        boolean isOwner = diary.getAuthorId().equals(loginUser.getUserId()); //로그인 유저가 다이어리 작성자인지 여부 확인
         model.addAttribute("diary", diary);
+        model.addAttribute("isOwner", isOwner);
         return "diary";
     }
 

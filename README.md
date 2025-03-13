@@ -7,6 +7,11 @@
 - 일기 조회
 - 일기 수정
 - 일기 삭제
+- 일기 공유
+  - 친구를 추가할 경우, 친구는 나의 일기를 읽을 수 있음
+  - 친구는 나의 일기를 수정, 삭제할 수는 없음
+  - 친구 추가시, 자기 자신을 추가할 수 없음
+  - 친구 ID를 입력했을 때, 조회되지 않으면 친구 추가 불가능  
 
 ## DB Diagram
 <img width="693" alt="Image" src="https://github.com/user-attachments/assets/b85b674c-f368-46fb-be5d-32e0156c175c" />

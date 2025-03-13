@@ -152,10 +152,11 @@
 </div>
 
 <div class="button-group">
-    <button class="btn-list" th:onclick="|location.href='@{/diaries/owner}'|">목록으로</button>
-    <button class="btn-edit" th:onclick="|location.href='@{/diaries/{diaryId}/edit(diaryId=${diary.id})}'|">수정
+    <button class="btn-list" th:onclick="|location.href='@{${isOwner} ? '/diaries/owner' : '/diaries/shared'}'|">목록으로</button>
+    <button class="btn-edit" th:if="${isOwner}"
+            th:onclick="|location.href='@{/diaries/{diaryId}/edit(diaryId=${diary.id})}'|">수정
     </button>
-    <form th:action="@{/diaries/{diaryId}/delete(diaryId=${diary.id})}" method="post"
+    <form th:if="${isOwner}" th:action="@{/diaries/{diaryId}/delete(diaryId=${diary.id})}" method="post"
           onsubmit="confirmDelete(event)">
         <button type="submit" class="btn-delete">삭제</button>
     </form>

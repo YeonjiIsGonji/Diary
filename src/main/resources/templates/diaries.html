@@ -47,7 +47,7 @@
         }
 
         .btn-register {
-            position: fixed;
+            /*position: fixed;*/
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
@@ -76,6 +76,25 @@
         .col-emotions {
             width: 30%;
         }
+
+        .button-container {
+            display: flex; /* 가로 배치 */
+            justify-content: center; /* 중앙 정렬 */
+            gap: 20px; /* 버튼 사이 간격 */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .btn-home {
+            background-color: #d4e3fc; /* 홈 버튼 색상 변경 */
+        }
+
+        .btn-home:hover {
+            background-color: #bad3f8;
+        }
+
     </style>
 </head>
 <body>
@@ -103,10 +122,9 @@
     </tr>
     </tbody>
 </table>
-<div>
-    <button class="btn-register" onclick="location.href='/diary/register'"
-            th:onclick="|location.href='@{/diaries/add}'|">일기 등록
-    </button>
+<div class="button-container">
+    <button class="btn-register" th:onclick="|location.href='@{/diaries/add}'|">일기 등록</button>
+    <button class="btn-register btn-home" th:onclick="|location.href='@{/}'|">홈으로</button>
 </div>
 </body>
 </html>
