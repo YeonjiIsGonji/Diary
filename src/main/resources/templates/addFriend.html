@@ -13,13 +13,25 @@
             border-color: #dc3545;
             color: #dc3545;
         }
+
+        .error-message {
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="py-5 text-center"><h2>친구 추가</h2>
     </div>
-    <form action="item.html" th:action="@{/sharedUser/add}" th:object="${user}" method="post">
+
+    <!-- 에러 메시지 표시 -->
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form action="item.html" th:action="@{/friendRequest/add}" th:object="${user}" method="post">
             <label for="loginId">친구 ID</label>
             <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
                    th:errorclass="field-error">
@@ -33,7 +45,7 @@
             </div>
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
-                        th:onclick="|location.href='@{/sharedUserList}'|"
+                        th:onclick="|location.href='@{/friendRequestList}'|"
                         type="button">취소</button>
             </div>
         </div>

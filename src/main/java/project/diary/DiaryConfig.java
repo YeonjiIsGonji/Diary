@@ -29,4 +29,9 @@ public class DiaryConfig {
     public UserSharedRepository userSharedRepository() {
         return new JdbcTemplateUserSharedRepository(dataSource);
     }
+
+    @Bean
+    public FriendRequestRepository friendRequestRepository() {
+        return new JdbcTemplateFriendRequestRepository(dataSource);
+    }
 }

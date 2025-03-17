@@ -30,7 +30,7 @@
 
     <div>
         <h4>나의 일기를 볼 수 있는 친구 :</h4>
-        <table class="table table-bordered mt-3" th:if="${not sharedUsers.empty}">
+        <table class="table table-bordered mt-3">
             <thead class="table-light">
             <tr>
                 <th>친구 ID</th>
@@ -54,22 +54,15 @@
     <hr class="my-4">
     <div class="row">
         <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg" type="button"
-                    th:onclick="|location.href='@{/sharedUser/add}'|">
-                친구 추가
-            </button>
-        </div>
-        <div class="col">
             <button class="w-100 btn btn-dark btn-lg" type="button"
                     th:onclick="|location.href='@{/}'|">
-                이전으로
+                홈으로
             </button>
         </div>
     </div>
     <hr class="my-4">
 </div> <!-- /container -->
 
-<!-- ✅ 모달창 (친구 삭제 확인) -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
