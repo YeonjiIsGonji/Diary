@@ -30,6 +30,9 @@ public class Diary {
     @Schema(description = "작성자 아이디(userId)")
     private Long authorId;
 
+    @Schema(description = "작성자 로그인 ID")
+    private String authorLoginId;
+
     public Diary() {
         this.emotions = new ArrayList<>();
     }

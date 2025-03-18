@@ -92,7 +92,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
 
     @Override
     public List<Diary> findSharedDiaries(Long userId) {
-        String sql = "select D.* from diary D JOIN user_shared US ON D.author_id = US.owner_user_id WHERE US.shared_user_id = ?";
+        String sql = "select D.*, U.loginId as authorLoginId from diary D join user_shared US on D.author_id = US.owner_user_id join users U on D.author_id = U.userId where US.shared_user_id = ?";
 
         List<Diary> sharedDiaries = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Diary diary = new Diary();
@@ -101,6 +101,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
             diary.setContent(rs.getString("content"));
             diary.setDate(rs.getDate("date").toLocalDate());
             diary.setAuthorId(rs.getLong("author_id"));
+            diary.setAuthorLoginId(rs.getString("authorLoginId"));
 
             diary.setEmotions(findEmotionsByDiaryId(diary.getId()));
 

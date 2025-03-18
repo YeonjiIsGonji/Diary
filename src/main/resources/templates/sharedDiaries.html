@@ -91,7 +91,7 @@
     </thead>
     <tbody>
     <tr th:each="diary : ${diaries}">
-        <td th:text="${diary.authorId}"></td>
+        <td th:text="${diary.authorLoginId}"></td>
         <td th:text="${diary.date}"></td>
         <td>
             <a th:href="@{/diaries/{diaryId}(diaryId=${diary.id})}" th:text="${diary.title}"></a>
