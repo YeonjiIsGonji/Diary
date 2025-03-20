@@ -113,6 +113,6 @@ public class DiaryController {
         }
 
         diaryService.deleteDiary(diaryId);
-        return "redirect:/diaries";
+        return "redirect:/diaries/owner";
     }
 }
