@@ -184,9 +184,6 @@
         // 모든 HTML 태그 제거 + &nbsp; (공백 문자) 제거
         let plainText = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, '').trim();
 
-        console.log("📌 현재 입력된 content:", content);
-        console.log("🚨 필터링된 content (HTML 태그 제거 후):", plainText);
-
         // 내용이 비어있거나 공백만 존재하는 경우
         if (plainText === '') {
             alert("내용을 입력해주세요.");

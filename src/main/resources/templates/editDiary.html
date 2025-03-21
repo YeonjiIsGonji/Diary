@@ -105,6 +105,7 @@
             background-color: #adb5bd;
         }
     </style>
+    <script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 </head>
 <body>
 <h1>일기 수정</h1>
@@ -133,10 +134,12 @@
         </div>
         <div class="form-group">
             <label for="content">내용</label>
-            <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요" rows="5" required></textarea>
+<!--            <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요" rows="5" required></textarea>-->
+            <textarea name="content" id="content" th:field="*{content}" rows="5" cols="10" placeholder="내용을 입력하세요"
+                      style="width: 100%; min-width:540px;"></textarea>
         </div>
         <div class="button-group">
-            <button type="submit">저장</button>
+            <button type="submit" onclick="return submitPost()">저장</button>
             <button type="button" th:onclick="|location.href='@{/diaries/{diaryId}(diaryId=${diary.id})}'|">취소</button>
         </div>
     </form>
@@ -161,6 +164,36 @@
 
         // 배열을 문자열로 변환하여 hidden input에 저장
         emotionInput.value = selectedEmotions.join(',');
+    }
+
+    var oEditors = [];
+    nhn.husky.EZCreator.createInIFrame({
+        oAppRef: oEditors,
+        elPlaceHolder: "content",
+        sSkinURI: "/smarteditor/SmartEditor2Skin.html",
+        fCreator: "createSEditor2",
+        htParams: {
+            // 편집기 크기 조절
+            se2_outerHeight: "400px",  // 에디터 전체 높이
+            se2_innerHeight: "300px"   // 편집 영역 높이
+        }
+    });
+
+    function submitPost() {
+        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // 에디터 내용 textarea로 반영
+        let content = document.getElementById("content").value.trim(); // 공백 제거
+
+        // 모든 HTML 태그 제거 + &nbsp; (공백 문자) 제거
+        let plainText = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, '').trim();
+
+        // 내용이 비어있거나 공백만 존재하는 경우
+        if (plainText === '') {
+            alert("내용을 입력해주세요.");
+            oEditors.getById["content"].exec("FOCUS"); // 에디터로 포커스 이동
+            return false; // 폼 제출 방지
+        }
+
+        return true; // 정상 입력 시 폼 제출 허용
     }
 </script>
 </body>
