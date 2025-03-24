@@ -1,7 +1,6 @@
 package project.diary.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import project.diary.domain.Diary;
@@ -55,7 +54,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
     public Optional<Diary> findById(Long diaryId) {
         //1. 기본 정보 가져오기
         String sql = "select * from diary where id = ?";
-        Diary diary = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        List<Diary> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Diary findDiary = new Diary();
             findDiary.setId(rs.getLong("id"));
             findDiary.setTitle(rs.getString("title"));
@@ -65,7 +64,13 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
             return findDiary;
         }, diaryId);
 
-        //2. 감정 가져오기
+        //2. 결과가 없으면 Optional.empty() 반환
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        //3. 감정 가져오기
+        Diary diary = result.get(0);
         diary.setEmotions(findEmotionsByDiaryId(diaryId));
         return Optional.ofNullable(diary);
     }
