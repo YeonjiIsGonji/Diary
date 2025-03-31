@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import project.diary.domain.Diary;
 import project.diary.domain.EmotionType;
+import project.diary.util.HtmlSanitizerUtil;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -23,14 +24,17 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
 
     @Override
     public Diary save(Diary diary) {
-        // 1. diary 테이블에 저장
+        // 1. content를 XSS 방지용으로 필터링
+        String sanitizedContent = HtmlSanitizerUtil.sanitize(diary.getContent());
+
+        // 2. diary 테이블에 저장
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("diary").usingGeneratedKeyColumns("id");
 
         //Diary 데이터를 Map 형태로 변환하여 저장
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("title", diary.getTitle());
-        parameters.put("content", diary.getContent());
+        parameters.put("content", sanitizedContent);
         parameters.put("date", diary.getDate());
         parameters.put("author_id", diary.getAuthorId());
 
@@ -38,7 +42,7 @@ public class JdbcTemplateDiaryRepository implements DiaryRepository{
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         diary.setId(key.longValue());
 
-        // 2. 선택된 감정을 diary_emotions 테이블에 저장
+        // 3. 선택된 감정을 diary_emotions 테이블에 저장
         String sql = "INSERT INTO diary_emotions (diary_id, emotion_type) VALUES (?, ?)";
         for (EmotionType emotion : diary.getEmotions()) {
             jdbcTemplate.update(sql, diary.getId(), emotion.name());
