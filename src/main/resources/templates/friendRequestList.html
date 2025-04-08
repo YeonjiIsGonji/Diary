@@ -15,15 +15,15 @@
 <body>
 <div class="container" style="max-width: 600px">
     <div class="py-5 text-center">
-        <h2 th:text="|${user.loginId}님의 초대 현황|"></h2>
+        <h2 th:text="|${user.loginId}님의 공유 요청 관리|"></h2>
     </div>
 
     <div>
-        <h4>내게 온 친구 요청 :</h4>
+        <h4>나에게 온 공유 요청 :</h4>
         <table class="table table-bordered mt-3">
             <thead class="table-light">
             <tr>
-                <th>보낸 친구의 ID</th>
+                <th>보낸 사용자 ID</th>
                 <th>수락/거절</th>
             </tr>
             </thead>
@@ -53,7 +53,7 @@
     <br>
 
     <div>
-        <h4>내가 보낸 친구 요청(대기중) :</h4>
+        <h4>내가 보낸 공유 요청(대기중) :</h4>
         <span th:each="request, iterStat : ${requestsFromMe}">
             <span th:text="${request.receiverLoginId}"></span>
             <span th:if="${!iterStat.last}">, </span>
@@ -65,7 +65,7 @@
         <div class="col">
             <button class="w-100 btn btn-secondary btn-lg" type="button"
                     th:onclick="|location.href='@{/friendRequest/add}'|">
-                친구 추가
+                공유 요청 보내기
             </button>
         </div>
         <div class="col">
