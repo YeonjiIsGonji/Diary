@@ -19,7 +19,7 @@
     </div>
 
     <div>
-        <h4>나에게 일기를 공유한 친구 :</h4>
+        <h4>나에게 일기를 공유한 사용자 :</h4>
         <span th:each="owner, iterStat : ${usersWhoSharedWithMe}">
             <span th:text="${owner.loginId}"></span>
             <span th:if="${!iterStat.last}">, </span>
@@ -29,12 +29,12 @@
     <br>
 
     <div>
-        <h4>나의 일기를 볼 수 있는 친구 :</h4>
+        <h4>나의 일기를 열람할 수 있는 사용자 :</h4>
         <table class="table table-bordered mt-3">
             <thead class="table-light">
             <tr>
-                <th>친구 ID</th>
-                <th>삭제</th>
+                <th>사용자 ID</th>
+                <th>공유 해제</th>
             </tr>
             </thead>
             <tbody>
@@ -43,7 +43,7 @@
                 <td>
                     <button class="btn btn-danger"
                             th:onclick="|confirmDelete('${sharedUser.userId}')|">
-                        삭제
+                        공유 해제
                     </button>
                 </td>
             </tr>
@@ -67,18 +67,18 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">친구 삭제 확인</h5>
+                <h5 class="modal-title" id="confirmDeleteModalLabel">공유 해제 확인</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                정말로 친구를 삭제하시겠습니까?<br>
-                삭제된 친구는 나의 일기를 읽을 수 없습니다.
+                정말로 공유를 해제하시겠습니까?<br>
+                해제된 친구는 나의 일기를 열람할 수 없습니다.
             </div>
             <div class="modal-footer">
                 <form id="deleteFriendForm" th:action="@{/sharedUser/delete}" method="post">
                     <input type="hidden" id="deleteFriendId" name="friendId">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-danger">삭제</button>
+                    <button type="submit" class="btn btn-danger">공유 해제</button>
                 </form>
             </div>
         </div>
