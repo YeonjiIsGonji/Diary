@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <title>일기 수정</title>
+    <style>
+        body {
+            font-family: 'Arial', 'sans-serif';
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+
+        .diary-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #495057;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .emotion-container {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .emotion-container img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+
+        .emotion-container img.selected {
+            border-color: #ff69b4;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        button[type="button"] {
+            background-color: #ced4da;
+            color: #212529;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #5a6268;
+        }
+
+        button[type="button"]:hover {
+            background-color: #adb5bd;
+        }
+    </style>
+</head>
+<body>
+<h1>일기 수정</h1>
+<div class="diary-card">
+    <form th:action method="post" th:object="${diary}">
+        <div class="form-group">
+            <label for="date">날짜</label>
+            <input type="date" id="date" th:field="*{date}">
+        </div>
+        <div class="form-group">
+            <label>기분</label>
+            <div class="emotion-container">
+                <img th:each="emotion : ${emotions}"
+                     th:classappend="${#lists.contains(diary.emotions, emotion) ? 'selected' : ''}"
+                     th:src="@{'/images/' + ${#strings.toLowerCase(emotion.name())} + '.png'}"
+                     th:alt="${emotion.description}"
+                     th:data-emotion="${emotion.name}"
+                     onclick="toggleEmotion(this)">
+            </div>
+            <!-- 숨겨진 필드: 배열 형태로 선택된 Emotion 저장 -->
+            <input type="hidden" id="emotions" th:field="*{emotions}">
+        </div>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required>
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요" rows="5" required></textarea>
+        </div>
+        <div class="button-group">
+            <button type="submit">저장</button>
+            <button type="button" th:onclick="|location.href='@{/diaries/{diaryId}(diaryId=${diary.id})}'|">취소</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleEmotion(imgElement) {
+        const emotionValue = imgElement.dataset.emotion;
+        const emotionInput = document.getElementById('emotions');
+        let selectedEmotions = emotionInput.value ? emotionInput.value.split(',') : [];
+
+        // 선택 상태 토글
+        if (selectedEmotions.includes(emotionValue)) {
+            // 이미 선택된 경우 제거
+            selectedEmotions = selectedEmotions.filter(emotion => emotion !== emotionValue);
+            imgElement.classList.remove('selected');
+        } else {
+            // 선택되지 않은 경우 추가
+            selectedEmotions.push(emotionValue);
+            imgElement.classList.add('selected');
+        }
+
+        // 배열을 문자열로 변환하여 hidden input에 저장
+        emotionInput.value = selectedEmotions.join(',');
+    }
+</script>
+</body>
+</html>
