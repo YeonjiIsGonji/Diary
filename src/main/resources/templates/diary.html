@@ -145,7 +145,7 @@
     </div>
     <div class="form-group">
         <p><strong>내용:</strong></p>
-        <div class="diary-content" th:text="${diary.content}">
+        <div class="diary-content" th:utext="${diary.content}">
             <!-- 긴 내용이 여기에 렌더링됨 -->
         </div>
     </div>

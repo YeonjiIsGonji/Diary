@@ -77,25 +77,25 @@ public class DiarySharingService {
         friendRequestRepository.rejectRequest(requestId);
     }
 
-    public void shareDiary(Long ownerUserId, String sharedUserLoginId) {
-        Optional<User> sharedUser = userSharedRepository.findUserIdByLoginId(sharedUserLoginId);
-
-        if (sharedUser.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
-        }
-
-        if (sharedUser.get().getUserId().equals(ownerUserId)) {
-            throw new IllegalArgumentException("자기 자신을 친구 추가할 수 없습니다.");
-        }
-
-        Long sharedUserId = sharedUser.get().getUserId();
-
-        if (userSharedRepository.isAlreadyShared(ownerUserId, sharedUserId)) {
-            throw new IllegalArgumentException("이미 공유된 사용자입니다.");
-        }
-
-        userSharedRepository.save(ownerUserId, sharedUserId);
-    }
+//    public void shareDiary(Long ownerUserId, String sharedUserLoginId) {
+//        Optional<User> sharedUser = userSharedRepository.findUserIdByLoginId(sharedUserLoginId);
+//
+//        if (sharedUser.isEmpty()) {
+//            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+//        }
+//
+//        if (sharedUser.get().getUserId().equals(ownerUserId)) {
+//            throw new IllegalArgumentException("자기 자신을 친구 추가할 수 없습니다.");
+//        }
+//
+//        Long sharedUserId = sharedUser.get().getUserId();
+//
+//        if (userSharedRepository.isAlreadyShared(ownerUserId, sharedUserId)) {
+//            throw new IllegalArgumentException("이미 공유된 사용자입니다.");
+//        }
+//
+//        userSharedRepository.save(ownerUserId, sharedUserId);
+//    }
 
     public List<User> getSharedUsers(Long userId) {
         return userSharedRepository.findSharedUsers(userId);

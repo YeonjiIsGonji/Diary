@@ -40,7 +40,7 @@ public class JdbcTemplateUserRepository implements UserRepository{
     @Override
     public Optional<User> findByLoginId(String loginID) {
         String sql = "select * from users where loginId = ?";
-        User user = jdbcTemplate.queryForObject(sql, new Object[]{loginID}, (rs, rowNum) -> {
+        List<User> user = jdbcTemplate.query(sql, new Object[]{loginID}, (rs, rowNum) -> {
             User findUser = new User();
             findUser.setUserId(rs.getLong("userId"));
             findUser.setLoginId(rs.getString("loginId"));
@@ -48,7 +48,7 @@ public class JdbcTemplateUserRepository implements UserRepository{
             return findUser;
         });
 
-        return Optional.ofNullable(user);
+        return user.stream().findFirst();
     }
 
     @Override
