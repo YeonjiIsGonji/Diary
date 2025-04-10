@@ -1,22 +1,22 @@
 package project.diary.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.diary.domain.Diary;
+import project.diary.domain.EmotionType;
+import project.diary.mapper.DiaryEmotionMapper;
+import project.diary.mapper.DiaryMapper;
 import project.diary.repository.DiaryRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
-
-    @Autowired
-    public DiaryService(DiaryRepository diaryRepository) {
-        this.diaryRepository = diaryRepository;
-    }
 
     public List<Diary> findDiariesByUserId(Long userId) {
         return diaryRepository.findDiariesByUserId(userId);

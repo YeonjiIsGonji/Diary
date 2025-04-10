@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.diary.mapper.DiaryMapper">
+    <insert id="save" parameterType="Diary" useGeneratedKeys="true" keyProperty="id">
+        insert into diary (title, content, date, author_id) values (#{title}, #{content}, #{date}, #{authorId})
+    </insert>
+
+    <select id="findById" parameterType="long" resultType="Diary">
+        select * from diary where id = #{diaryId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultType="Diary">
+        select * from diary where author_id = #{userId}
+    </select>
+
+    <select id="findSharedDiaries" parameterType="long" resultType="Diary">
+        select D.*, U.loginId as authorLoginId
+        from diary D
+            join user_shared US on D.author_id = US.owner_user_id
+            join users U on D.author_id = U.userId
+        where US.shared_user_id = #{userId}
+    </select>
+    
+    <update id="update" parameterType="Diary">
+        update diary set title=#{title}, content=#{content}, date=#{date} where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        delete from diary where id = #{diaryId}
+    </delete>
+</mapper>

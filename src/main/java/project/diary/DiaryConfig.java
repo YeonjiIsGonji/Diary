@@ -2,6 +2,9 @@ package project.diary;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import project.diary.mapper.DiaryEmotionMapper;
+import project.diary.mapper.DiaryMapper;
+import project.diary.mapper.UserMapper;
 import project.diary.repository.*;
 
 import javax.sql.DataSource;
@@ -16,13 +19,15 @@ public class DiaryConfig {
     }
 
     @Bean
-    public DiaryRepository diaryRepository() {
-        return new JdbcTemplateDiaryRepository(dataSource);
+    public DiaryRepository diaryRepository(DiaryMapper diaryMapper, DiaryEmotionMapper diaryEmotionMapper) {
+//        return new JdbcTemplateDiaryRepository(dataSource);
+        return new MyBatisDiaryRepository(diaryMapper, diaryEmotionMapper);
     }
 
     @Bean
-    public UserRepository userRepository() {
-        return new JdbcTemplateUserRepository(dataSource);
+    public UserRepository userRepository(UserMapper userMapper) {
+//        return new JdbcTemplateUserRepository(dataSource);
+        return new MyBatisUserRepository(userMapper);
     }
 
     @Bean

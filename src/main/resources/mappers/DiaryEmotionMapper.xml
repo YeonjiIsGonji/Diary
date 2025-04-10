@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.diary.mapper.DiaryEmotionMapper">
+    <insert id="insertEmotion">
+        insert into diary_emotions (diary_id, emotion_type) values (#{diaryId}, #{emotion})
+    </insert>
+
+    <delete id="deleteEmotion">
+        delete from diary_emotions where diary_id = #{diaryId}
+    </delete>
+    
+    <select id="findEmotion" resultType="project.diary.domain.EmotionType">
+        select emotion_type from diary_emotions where diary_id = #{diaryId}
+    </select>
+</mapper>

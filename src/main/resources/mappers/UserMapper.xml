@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.diary.mapper.UserMapper">
+    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        insert into users (loginId, password) values (#{loginId}, #{password})
+    </insert>
+
+    <select id="findByLoginId" parameterType="string" resultType="User">
+        select * from users where loginId = #{loginId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultType="User">
+        select * from users where userId = #{userId}
+    </select>
+
+    <select id="findAll" resultType="User">
+        select * from users
+    </select>
+</mapper>
