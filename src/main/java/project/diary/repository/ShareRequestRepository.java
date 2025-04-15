@@ -1,14 +1,14 @@
 package project.diary.repository;
 
-import project.diary.domain.FriendRequest;
+import project.diary.domain.ShareRequest;
 
 import java.util.List;
 
-public interface FriendRequestRepository {
+public interface ShareRequestRepository {
     void saveFriendRequest(Long senderId, Long receiverId);
     boolean isRequestExists(Long senderId, Long receiverId);
-    List<FriendRequest> findPendingRequestsToMe(Long receiverId);
-    List<FriendRequest> findPendingRequestsFromMe(Long senderId);
+    List<ShareRequest> findPendingRequestsToMe(Long receiverId);
+    List<ShareRequest> findPendingRequestsFromMe(Long senderId);
     void acceptRequest(Long requestId);
     void rejectRequest(Long requestId);
 

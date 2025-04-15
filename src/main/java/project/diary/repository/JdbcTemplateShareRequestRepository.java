@@ -2,16 +2,16 @@ package project.diary.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import project.diary.domain.FriendRequest;
+import project.diary.domain.ShareRequest;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class JdbcTemplateFriendRequestRepository implements FriendRequestRepository {
+public class JdbcTemplateShareRequestRepository implements ShareRequestRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTemplateFriendRequestRepository(DataSource dataSource) {
+    public JdbcTemplateShareRequestRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -47,7 +47,7 @@ public class JdbcTemplateFriendRequestRepository implements FriendRequestReposit
      * 받은 친구 요청 조회
      */
     @Override
-    public List<FriendRequest> findPendingRequestsToMe(Long receiverId) {
+    public List<ShareRequest> findPendingRequestsToMe(Long receiverId) {
         String sql = "select fr.id, fr.sender_id, u.loginId, fr.receiver_id, fr.status " +
                 "from friend_requests fr " +
                 "join users u on fr.sender_id = u.userId " +
@@ -59,7 +59,7 @@ public class JdbcTemplateFriendRequestRepository implements FriendRequestReposit
      * 보낸 친구 요청 조회
      */
     @Override
-    public List<FriendRequest> findPendingRequestsFromMe(Long senderId) {
+    public List<ShareRequest> findPendingRequestsFromMe(Long senderId) {
         String sql = "select fr.id, fr.sender_id, fr.receiver_id, u.loginId, fr.status " +
                 "from friend_requests fr " +
                 "join users u on fr.receiver_id = u.userId " +
@@ -85,9 +85,9 @@ public class JdbcTemplateFriendRequestRepository implements FriendRequestReposit
         jdbcTemplate.update(sql, requestId);
     }
 
-    private RowMapper<FriendRequest> friendRequestToMeRowMapper() {
+    private RowMapper<ShareRequest> friendRequestToMeRowMapper() {
         return (rs, rowNum) -> {
-            FriendRequest request = new FriendRequest();
+            ShareRequest request = new ShareRequest();
             request.setFriendRequestId(rs.getLong("id"));
             request.setSenderId(rs.getLong("sender_id"));
             request.setReceiverId(rs.getLong("receiver_id"));
@@ -97,9 +97,9 @@ public class JdbcTemplateFriendRequestRepository implements FriendRequestReposit
         };
     }
 
-    private RowMapper<FriendRequest> friendRequestFromMeRowMapper() {
+    private RowMapper<ShareRequest> friendRequestFromMeRowMapper() {
         return (rs, rowNum) -> {
-            FriendRequest request = new FriendRequest();
+            ShareRequest request = new ShareRequest();
             request.setFriendRequestId(rs.getLong("id"));
             request.setSenderId(rs.getLong("sender_id"));
             request.setReceiverId(rs.getLong("receiver_id"));

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.diary.mapper.ShareRequestMapper">
+    <insert id="saveFriendRequest" parameterType="long">
+        insert into friend_requests (sender_id, receiver_id, status)
+        values (#{senderId}, #{receiverId}, 'PENDING')
+    </insert>
+
+    <update id="updateRejectedToPending" parameterType="long">
+        update friend_requests
+        set status = 'PENDING'
+        where sender_id = #{senderId} and receiver_id = #{receiverId}
+    </update>
+
+    <select id="checkRejectedCount" resultType="int" parameterType="long">
+        select count(*) from friend_requests
+        where sender_id = #{senderId} and receiver_id = #{receiverId} and status = 'REJECTED'
+    </select>
+
+    <select id="isRequestExists" resultType="boolean" parameterType="long">
+        select count(*) > 0 from friend_requests
+        where sender_id = #{senderId} and receiver_id = #{receiverId} and status = 'PENDING'
+    </select>
+
+    <select id="findPendingRequestsToMe" resultType="ShareRequest" parameterType="long">
+        select fr.id AS friendRequestId, fr.sender_id AS senderId, u.loginId AS senderLoginId,
+               fr.receiver_id AS receiverId, fr.status
+        from friend_requests fr
+        join users u on fr.sender_id = u.userId
+        where fr.receiver_id = #{receiverId} and fr.status = 'PENDING'
+    </select>
+
+    <select id="findPendingRequestsFromMe" resultType="ShareRequest" parameterType="long">
+        select fr.id AS friendRequestId, fr.sender_id AS senderId,
+               fr.receiver_id AS receiverId, u.loginId AS receiverLoginId, fr.status
+        from friend_requests fr
+        join users u on fr.receiver_id = u.userId
+        where fr.sender_id = #{senderId} and fr.status = 'PENDING'
+    </select>
+
+    <update id="acceptRequest" parameterType="long">
+        update friend_requests set status = 'ACCEPTED' where id = #{requestId}
+    </update>
+
+    <update id="rejectRequest" parameterType="long">
+        update friend_requests set status = 'REJECTED' where id = #{requestId}
+    </update>
+</mapper>

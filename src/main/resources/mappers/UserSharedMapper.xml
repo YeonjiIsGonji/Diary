@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.diary.mapper.UserSharedMapper">
+
+    <insert id="save" parameterType="long">
+        insert into user_shared (owner_user_id, shared_user_id) values (#{ownerUserId}, #{sharedUserId})
+    </insert>
+
+    <select id="findUserIdByLoginId" parameterType="string" resultType="User">
+        select userId, loginId from users where loginId = #{loginId}
+    </select>
+
+    <select id="isAlreadyShared" parameterType="long" resultType="boolean">
+        select count(*) > 0 from user_shared where owner_user_id = #{ownerUserId} and shared_user_id = #{sharedUserId}
+    </select>
+
+    <select id="findSharedUsers" parameterType="long" resultType="User">
+        select users.userId, users.loginId
+        from users
+        join user_shared on users.userId = user_shared.shared_user_id
+        where user_shared.owner_user_id = #{userId}
+    </select>
+
+    <select id="findUsersWhoSharedWithMe" parameterType="long" resultType="User">
+        select users.userId, users.loginId
+        from users
+        join user_shared on users.userId = user_shared.owner_user_id
+        where user_shared.shared_user_id = #{userId}
+    </select>
+
+    <delete id="delete" parameterType="long">
+        delete from user_shared where owner_user_id = #{ownerUserId} and shared_user_id = #{sharedUserId}
+    </delete>
+</mapper>

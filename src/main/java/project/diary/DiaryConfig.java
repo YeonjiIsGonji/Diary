@@ -2,9 +2,7 @@ package project.diary;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import project.diary.mapper.DiaryEmotionMapper;
-import project.diary.mapper.DiaryMapper;
-import project.diary.mapper.UserMapper;
+import project.diary.mapper.*;
 import project.diary.repository.*;
 
 import javax.sql.DataSource;
@@ -31,12 +29,14 @@ public class DiaryConfig {
     }
 
     @Bean
-    public UserSharedRepository userSharedRepository() {
-        return new JdbcTemplateUserSharedRepository(dataSource);
+    public UserSharedRepository userSharedRepository(UserSharedMapper userSharedMapper) {
+//        return new JdbcTemplateUserSharedRepository(dataSource);
+        return new MyBatisUserSharedRepository(userSharedMapper);
     }
 
     @Bean
-    public FriendRequestRepository friendRequestRepository() {
-        return new JdbcTemplateFriendRequestRepository(dataSource);
+    public ShareRequestRepository shareRequestRepository(ShareRequestMapper shareRequestMapper) {
+//        return new JdbcTemplateShareRequestRepository(dataSource);
+        return new MyBatisShareRequestRepository(shareRequestMapper);
     }
 }

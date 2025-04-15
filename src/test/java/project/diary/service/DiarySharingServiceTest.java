@@ -1,22 +1,20 @@
 package project.diary.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import project.diary.domain.FriendRequest;
+import project.diary.domain.ShareRequest;
 import project.diary.domain.User;
-import project.diary.repository.FriendRequestRepository;
+import project.diary.repository.ShareRequestRepository;
 import project.diary.repository.UserRepository;
 import project.diary.repository.UserSharedRepository;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -29,7 +27,7 @@ class DiarySharingServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private FriendRequestRepository friendRequestRepository;
+    private ShareRequestRepository shareRequestRepository;
 
     @Autowired
     private UserSharedRepository userSharedRepository;
@@ -84,7 +82,7 @@ class DiarySharingServiceTest {
     @DisplayName("sendFriendRequest_유효하지 않은 친구요청_이미 친구인 친구")
     void 친구요청_이미친구() {
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.acceptFriendRequest(requestId, userAId, userBId);
 
         String result = diarySharingService.sendFriendRequest(userAId, "userB");
@@ -97,7 +95,7 @@ class DiarySharingServiceTest {
         //userA -> userB 친구요청
         diarySharingService.sendFriendRequest(userAId, "userB");
         //userB가 확인
-        List<FriendRequest> requests = diarySharingService.getPendingRequestsToMe(userBId);
+        List<ShareRequest> requests = diarySharingService.getPendingRequestsToMe(userBId);
         assertThat(requests).hasSize(1);
         assertThat(requests.get(0).getSenderId()).isEqualTo(userAId);
     }
@@ -108,7 +106,7 @@ class DiarySharingServiceTest {
         //userA -> userB 친구요청
         diarySharingService.sendFriendRequest(userAId, "userB");
         //userA가 확인
-        List<FriendRequest> requests = diarySharingService.getPendingRequestsFromMe(userAId);
+        List<ShareRequest> requests = diarySharingService.getPendingRequestsFromMe(userAId);
         assertThat(requests).hasSize(1);
         assertThat(requests.get(0).getSenderId()).isEqualTo(userAId);
     }
@@ -118,7 +116,7 @@ class DiarySharingServiceTest {
     void 친구요청수락() {
         //userA -> userB 친구요청
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.acceptFriendRequest(requestId, userAId, userBId);
 
         List<User> result = diarySharingService.getSharedUsers(userAId);
@@ -131,7 +129,7 @@ class DiarySharingServiceTest {
     void 친구요청거절() {
         //userA -> userB 친구요청
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.rejectFriendRequest(requestId);
 
         List<User> result = diarySharingService.getSharedUsers(userAId);
@@ -143,7 +141,7 @@ class DiarySharingServiceTest {
     void 나의공유유저확인() {
         //친구 요청 후 수락
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.acceptFriendRequest(requestId, userAId, userBId);
 
         List<User> users = diarySharingService.getSharedUsers(userAId);
@@ -156,7 +154,7 @@ class DiarySharingServiceTest {
     void 나에게공유한유저확인() {
         //친구 요청 후 수락
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.acceptFriendRequest(requestId, userAId, userBId);
 
         List<User> users = diarySharingService.findUsersWhoSharedWithMe(userBId);
@@ -169,7 +167,7 @@ class DiarySharingServiceTest {
     void 공유취소() {
         //친구 요청 후 수락
         diarySharingService.sendFriendRequest(userAId, "userB");
-        Long requestId = friendRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
+        Long requestId = shareRequestRepository.findPendingRequestsToMe(userBId).get(0).getFriendRequestId();
         diarySharingService.acceptFriendRequest(requestId, userAId, userBId);
 
         diarySharingService.deleteSharedUser(userAId, userBId);

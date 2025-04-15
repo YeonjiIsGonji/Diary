@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import project.diary.domain.FriendRequest;
+import project.diary.domain.ShareRequest;
 import project.diary.domain.User;
 import project.diary.service.DiarySharingService;
 
@@ -35,10 +35,10 @@ public class SharedUserController {
     public String showFriendRequestList(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
         model.addAttribute("user", loginUser);
 
-        List<FriendRequest> requestsToMe = diarySharingService.getPendingRequestsToMe(loginUser.getUserId()); // 내게 보낸 친구 요청
+        List<ShareRequest> requestsToMe = diarySharingService.getPendingRequestsToMe(loginUser.getUserId()); // 내게 보낸 친구 요청
         model.addAttribute("requestsToMe", requestsToMe);
 
-        List<FriendRequest> requestsFromMe = diarySharingService.getPendingRequestsFromMe(loginUser.getUserId()); // 내가 보낸 친구 요청
+        List<ShareRequest> requestsFromMe = diarySharingService.getPendingRequestsFromMe(loginUser.getUserId()); // 내가 보낸 친구 요청
         model.addAttribute("requestsFromMe", requestsFromMe);
 
         return "friendRequestList";

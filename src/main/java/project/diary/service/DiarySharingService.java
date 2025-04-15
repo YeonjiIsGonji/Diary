@@ -3,10 +3,9 @@ package project.diary.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.diary.domain.FriendRequest;
+import project.diary.domain.ShareRequest;
 import project.diary.domain.User;
-import project.diary.repository.DiaryRepository;
-import project.diary.repository.FriendRequestRepository;
+import project.diary.repository.ShareRequestRepository;
 import project.diary.repository.UserSharedRepository;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @Transactional
 public class DiarySharingService {
 
-    private final FriendRequestRepository friendRequestRepository;
+    private final ShareRequestRepository shareRequestRepository;
     private final UserSharedRepository userSharedRepository;
 
     /**
@@ -40,33 +39,33 @@ public class DiarySharingService {
             return "이미 초대된 사용자입니다.";
         }
 
-        if (friendRequestRepository.isRequestExists(senderId, receiverId)) {
+        if (shareRequestRepository.isRequestExists(senderId, receiverId)) {
             return "이미 초대 요청을 보냈습니다.";
         }
 
-        friendRequestRepository.saveFriendRequest(senderId, receiverId);
+        shareRequestRepository.saveFriendRequest(senderId, receiverId);
         return "초대 요청이 전송되었습니다.";
     }
 
     /**
      * 받은 친구 요청 조회
      */
-    public List<FriendRequest> getPendingRequestsToMe(Long receiverId) {
-        return friendRequestRepository.findPendingRequestsToMe(receiverId);
+    public List<ShareRequest> getPendingRequestsToMe(Long receiverId) {
+        return shareRequestRepository.findPendingRequestsToMe(receiverId);
     }
 
     /**
      * 보낸 친구 요청 조회
      */
-    public List<FriendRequest> getPendingRequestsFromMe(Long senderId) {
-        return friendRequestRepository.findPendingRequestsFromMe(senderId);
+    public List<ShareRequest> getPendingRequestsFromMe(Long senderId) {
+        return shareRequestRepository.findPendingRequestsFromMe(senderId);
     }
 
     /**
      * 초대 요청 수락
      */
     public void acceptFriendRequest(Long friendRequestID, Long senderId, Long receiverId) {
-        friendRequestRepository.acceptRequest(friendRequestID);
+        shareRequestRepository.acceptRequest(friendRequestID);
         userSharedRepository.save(senderId, receiverId);
     }
 
@@ -74,7 +73,7 @@ public class DiarySharingService {
      * 초대 요청 거절
      */
     public void rejectFriendRequest(Long requestId) {
-        friendRequestRepository.rejectRequest(requestId);
+        shareRequestRepository.rejectRequest(requestId);
     }
 
 //    public void shareDiary(Long ownerUserId, String sharedUserLoginId) {
