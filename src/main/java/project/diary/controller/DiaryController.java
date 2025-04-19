@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.diary.domain.Diary;
 import project.diary.domain.EmotionType;
+import project.diary.domain.LikeResponse;
 import project.diary.domain.User;
 import project.diary.service.DiaryService;
+import project.diary.service.LikeService;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final LikeService likeService;
 
     @GetMapping("/owner")
     @Operation(summary = "로그인한 사용자의 diary 목록 조회")
@@ -52,7 +55,27 @@ public class DiaryController {
         boolean isOwner = diary.getAuthorId().equals(loginUser.getUserId()); //로그인 유저가 다이어리 작성자인지 여부 확인
         model.addAttribute("diary", diary);
         model.addAttribute("isOwner", isOwner);
+
+        int likeCount = likeService.countLikes(diaryId);
+        model.addAttribute("likeCount", likeCount);
+
+        if (!isOwner) {
+            boolean isLiked = likeService.isLiked(diaryId, loginUser.getUserId());
+            model.addAttribute("isLiked", isLiked);
+        }
+
+        model.addAttribute("user", loginUser);
+
         return "diary";
+    }
+
+    @PostMapping("/{diaryId}/like")
+    @ResponseBody
+    public LikeResponse toggleLike(@PathVariable Long diaryId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
+        boolean liked = likeService.toggleLike(diaryId, loginUser.getUserId());
+        int count = likeService.countLikes(diaryId);
+
+        return new LikeResponse(liked, count);
     }
 
     @GetMapping("/add")

@@ -11,6 +11,31 @@
                 event.preventDefault(); // 사용자가 취소 버튼을 누른 경우 삭제 요청을 중단
             }
         }
+
+        function toggleLike(diaryId, userId) {
+            fetch(`/diaries/${diaryId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const heart = document.getElementById(`heart-${diaryId}`);
+                    const count = document.getElementById(`like-count-${diaryId}`);
+
+                    if (heart && count) {
+                        heart.textContent = data.liked ? '❤️' : '🤍';
+                        count.textContent = data.count;
+                    } else {
+                        console.warn("좋아요 요소가 존재하지 않습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("좋아요 처리 중 오류 발생:", error);
+                });
+        }
     </script>
     <style>
         /* 기존 스타일 및 수정된 .diary-content 스타일 포함 */
@@ -120,6 +145,26 @@
         .btn-delete:hover {
             background-color: #adb5bd;
         }
+        .like-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .like-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .like-display {
+            font-size: 20px;
+            color: #e63946;
+        }
+
     </style>
 </head>
 <body>
@@ -150,6 +195,18 @@
         </div>
     </div>
 </div>
+
+<div class="like-wrapper">
+    <button th:if="${!isOwner}" th:onclick="|toggleLike(${diary.id}, ${user.userId})|" class="like-button">
+        <span th:id="|heart-${diary.id}|" th:text="${isLiked} ? '❤️' : '🤍'"></span>
+        <span th:id="|like-count-${diary.id}|" th:text="${likeCount}">0</span>
+    </button>
+    <div th:if="${isOwner}" class="like-display">
+        ❤️ <span th:text="${likeCount}">0</span>
+    </div>
+</div>
+
+
 
 <div class="button-group">
     <button class="btn-list" th:onclick="|location.href='@{${isOwner} ? '/diaries/owner' : '/diaries/shared'}'|">목록으로</button>
